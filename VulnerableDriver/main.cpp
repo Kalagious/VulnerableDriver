@@ -13,10 +13,14 @@ extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT DriverObject, PUNICODE_STRING Reg
     UNICODE_STRING devName;
     RtlInitUnicodeString(&devName, L"\\Device\\VulnDriver");
 
-
+    UNICODE_STRING sddlString;
     PDEVICE_OBJECT DeviceObject;
-    NTSTATUS status = IoCreateDevice(DriverObject, 0, &devName, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &DeviceObject);
-    
+
+    RtlInitUnicodeString(&sddlString, L"D:P(A;;GA;;;SY)(A;;GRGWGX;;;BA)(A;;GA;;;WD)");
+
+
+    NTSTATUS status = IoCreateDeviceSecure(DriverObject, 0, &devName, FILE_DEVICE_UNKNOWN, FILE_DEVICE_SECURE_OPEN, FALSE, &sddlString, NULL, &DeviceObject);
+
     
     if (!NT_SUCCESS(status)) 
         return status;
